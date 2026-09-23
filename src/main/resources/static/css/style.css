@@ -1,0 +1,471 @@
+/* ================================
+   SPOTREPORT
+   macOS-inspired interface
+   ================================ */
+
+
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+    margin: 0;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        "SF Pro Text",
+        "Helvetica Neue",
+        Arial,
+        sans-serif;
+
+    background: #f2f2f7;
+    color: #1d1d1f;
+
+    -webkit-font-smoothing: antialiased;
+}
+
+
+/* ================================
+   HEADER
+   ================================ */
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    padding: 18px 50px;
+
+    background: rgba(255, 255, 255, 0.82);
+
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+
+header h1 {
+    margin: 0;
+
+    font-size: 25px;
+    font-weight: 700;
+
+    letter-spacing: -0.6px;
+}
+
+
+header p {
+    margin: 3px 0 0;
+
+    color: #86868b;
+
+    font-size: 13px;
+}
+
+
+/* ================================
+   MAIN CONTAINER
+   ================================ */
+
+.container {
+    width: 100%;
+    max-width: 850px;
+
+    margin: 55px auto;
+
+    padding: 0 24px;
+}
+
+
+/* ================================
+   CARDS
+   ================================ */
+
+.card {
+    margin-bottom: 25px;
+    padding: 32px;
+
+    background: #ffffff;
+
+    border: 1px solid rgba(0, 0, 0, 0.06);
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.05),
+        0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+
+.card h2 {
+    margin: 0 0 8px;
+
+    font-size: 24px;
+    font-weight: 650;
+
+    letter-spacing: -0.5px;
+}
+
+
+.card p {
+    margin-top: 0;
+
+    color: #6e6e73;
+
+    line-height: 1.55;
+}
+
+
+/* ================================
+   FORM LABELS
+   ================================ */
+
+label {
+    display: block;
+
+    margin-top: 22px;
+    margin-bottom: 8px;
+
+    color: #3a3a3c;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* ================================
+   FORM INPUTS
+   ================================ */
+
+input,
+textarea,
+select {
+    width: 100%;
+
+    padding: 13px 14px;
+
+    border: 1px solid #d1d1d6;
+    border-radius: 11px;
+
+    background: #fbfbfd;
+
+    color: #1d1d1f;
+
+    font-family: inherit;
+    font-size: 15px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+
+input::placeholder,
+textarea::placeholder {
+    color: #aeaeb2;
+}
+
+
+input:focus,
+textarea:focus,
+select:focus {
+    background: #ffffff;
+
+    border-color: #007aff;
+
+    box-shadow:
+        0 0 0 4px rgba(0, 122, 255, 0.12);
+}
+
+
+textarea {
+    min-height: 120px;
+
+    resize: vertical;
+}
+
+
+/* ================================
+   LOCATION ROW
+   ================================ */
+
+.location-row {
+    display: flex;
+
+    gap: 10px;
+}
+
+
+.location-row input {
+    flex: 1;
+}
+
+
+.location-row button {
+    flex-shrink: 0;
+}
+
+
+/* ================================
+   BUTTONS
+   ================================ */
+
+button {
+    border: none;
+
+    border-radius: 10px;
+
+    padding: 11px 18px;
+
+    font-family: inherit;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        background 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+
+.primary-button {
+    margin-top: 20px;
+
+    background: #007aff;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 3px 8px rgba(0, 122, 255, 0.2);
+}
+
+
+.primary-button:hover {
+    background: #006ee6;
+
+    transform: translateY(-1px);
+}
+
+
+.secondary-button {
+    background: #e9e9ee;
+
+    color: #1d1d1f;
+}
+
+
+.secondary-button:hover {
+    background: #dedee3;
+}
+
+
+button:active {
+    transform: scale(0.97);
+}
+
+
+/* ================================
+   FORUM HEADER
+   ================================ */
+
+.forum-header {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: flex-start;
+
+    gap: 20px;
+}
+
+
+/* ================================
+   LIVE INDICATOR
+   ================================ */
+
+.live-indicator {
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 6px 10px;
+
+    border-radius: 999px;
+
+    background: #e8f7ed;
+
+    color: #248a3d;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+.live-dot {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #34c759;
+}
+
+
+/* ================================
+   REPORT ITEMS
+   ================================ */
+
+.report-item {
+    padding: 22px 0;
+
+    border-top: 1px solid #e5e5ea;
+}
+
+
+.report-item:first-of-type {
+    margin-top: 20px;
+}
+
+
+.report-item h3 {
+    margin: 0;
+
+    font-size: 17px;
+}
+
+
+.report-item strong {
+    display: block;
+
+    margin-top: 5px;
+
+    font-size: 15px;
+}
+
+
+.report-item p {
+    margin-top: 8px;
+    margin-bottom: 0;
+
+    font-size: 14px;
+}
+
+
+/* ================================
+   REPORT STATUS
+   ================================ */
+
+.report-top {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 15px;
+}
+
+
+.status {
+    display: inline-block;
+
+    padding: 6px 11px;
+
+    border-radius: 999px;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+.reviewing {
+    background: #fff3cd;
+
+    color: #856404;
+}
+
+
+.reported {
+    background: #e5e5ea;
+
+    color: #636366;
+}
+
+
+/* ================================
+   FOOTER
+   ================================ */
+
+footer {
+    padding: 35px;
+
+    text-align: center;
+
+    color: #86868b;
+
+    font-size: 13px;
+}
+
+
+/* ================================
+   MOBILE
+   ================================ */
+
+@media (max-width: 600px) {
+
+    header {
+        padding: 17px 22px;
+    }
+
+
+    header h1 {
+        font-size: 22px;
+    }
+
+
+    .container {
+        margin: 30px auto;
+
+        padding: 0 15px;
+    }
+
+
+    .card {
+        padding: 23px;
+
+        border-radius: 16px;
+    }
+
+
+    .card h2 {
+        font-size: 21px;
+    }
+
+
+    .location-row {
+        flex-direction: column;
+    }
+
+
+    .location-row button {
+        width: 100%;
+    }
+
+
+    .forum-header,
+    .report-top {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+}

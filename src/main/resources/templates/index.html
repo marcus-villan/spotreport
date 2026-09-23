@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SpotReport | Facility Reporting</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>SpotReport</h1>
+    <p>Facility Reporting and Live Service Monitoring</p>
+</header>
+
+<main class="container">
+
+    <!-- Report Form -->
+    <section class="card">
+
+        <div class="card-header">
+            <div>
+                <h2>Report a Facility Issue</h2>
+                <p>
+                    Identify the location using a QR code or enter the room
+                    keycode manually.
+                </p>
+            </div>
+        </div>
+
+        <label for="location">Room / Facility Keycode</label>
+
+        <div class="location-row">
+            <input
+                type="text"
+                id="location"
+                placeholder="Example: ROOM-B201"
+            >
+
+            <button type="button" class="secondary-button">
+                Scan QR
+            </button>
+        </div>
+
+        <label for="issue">Issue Type</label>
+
+        <select id="issue">
+            <option>Electrical Problem</option>
+            <option>Water / Plumbing</option>
+            <option>Broken Equipment</option>
+            <option>Room / Facility Damage</option>
+            <option>Other</option>
+        </select>
+
+        <label for="description">Issue Description</label>
+
+        <textarea
+            id="description"
+            placeholder="Describe the problem..."
+        ></textarea>
+
+        <button
+            type="button"
+            class="primary-button"
+            onclick="submitReport()"
+        >
+            Submit Report
+        </button>
+
+    </section>
+
+
+    <!-- Live Service Forum -->
+    <section class="card">
+
+        <div class="forum-header">
+            <div>
+                <h2>Live Service Forum</h2>
+                <p>
+                    View updates about reported facility concerns.
+                </p>
+            </div>
+
+            <span class="live-indicator">
+                <span class="live-dot"></span>
+                Live
+            </span>
+        </div>
+
+        <div class="report-item">
+
+            <div class="report-top">
+                <h3>Room B201</h3>
+                <span class="status reviewing">
+                    Under Review
+                </span>
+            </div>
+
+            <strong>Broken Air Conditioner</strong>
+
+            <p>
+                Maintenance personnel have received the report and are
+                reviewing the issue.
+            </p>
+
+        </div>
+
+
+        <div class="report-item">
+
+            <div class="report-top">
+                <h3>Room A105</h3>
+                <span class="status reported">
+                    Reported
+                </span>
+            </div>
+
+            <strong>Damaged Light</strong>
+
+            <p>
+                A facility issue has been submitted and is awaiting
+                maintenance action.
+            </p>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer>
+    SpotReport Prototype · Facility Management System
+</footer>
+
+
+<script>
+    function submitReport() {
+
+        const location =
+            document.getElementById("location").value;
+
+        const issue =
+            document.getElementById("issue").value;
+
+        const description =
+            document.getElementById("description").value;
+
+        if (location === "" || description === "") {
+
+            alert(
+                "Please enter the room keycode and describe the issue."
+            );
+
+            return;
+        }
+
+        alert(
+            "Report submitted successfully!\n\n" +
+            "Location: " + location + "\n" +
+            "Issue: " + issue
+        );
+    }
+</script>
+
+</body>
+</html>
