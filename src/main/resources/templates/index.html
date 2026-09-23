@@ -138,32 +138,69 @@
 
 
 <script>
-    function submitReport() {
+function submitReport() {
+    const location = document.getElementById("location").value.trim();
+    const issue = document.getElementById("issue").value;
+    const description = document.getElementById("description").value.trim();
 
-        const location =
-            document.getElementById("location").value;
-
-        const issue =
-            document.getElementById("issue").value;
-
-        const description =
-            document.getElementById("description").value;
-
-        if (location === "" || description === "") {
-
-            alert(
-                "Please enter the room keycode and describe the issue."
-            );
-
-            return;
-        }
-
-        alert(
-            "Report submitted successfully!\n\n" +
-            "Location: " + location + "\n" +
-            "Issue: " + issue
-        );
+    if (location === "" || description === "") {
+        alert("Please enter the room keycode and describe the issue.");
+        return;
     }
+
+    const report = {
+        location: location,
+        issue: issue,
+        description: description,
+        status: "Reported"
+    };
+
+    // Save the report locally for this browser
+    const reports = JSON.parse(localStorage.getItem("spotReports") || "[]");
+    reports.unshift(report);
+    localStorage.setItem("spotReports", JSON.stringify(reports));
+
+    addReportToForum(report);
+
+    document.getElementById("location").value = "";
+    document.getElementById("description").value = "";
+
+    alert("Report submitted successfully!");
+}
+
+function addReportToForum(report) {
+    const forumHeader = document.querySelector(".forum-header");
+
+    const reportItem = document.createElement("div");
+    reportItem.className = "report-item";
+
+    reportItem.innerHTML = `
+        <div class="report-top">
+            <h3>${escapeHtml(report.location)}</h3>
+            <span class="status reported">${escapeHtml(report.status)}</span>
+        </div>
+        <strong>${escapeHtml(report.issue)}</strong>
+        <p>${escapeHtml(report.description)}</p>
+    `;
+
+    forumHeader.insertAdjacentElement("afterend", reportItem);
+}
+
+function loadSavedReports() {
+    const reports = JSON.parse(localStorage.getItem("spotReports") || "[]");
+
+    reports.reverse().forEach(report => {
+        addReportToForum(report);
+    });
+}
+
+function escapeHtml(text) {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+loadSavedReports();
 </script>
 
 </body>
