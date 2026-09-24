@@ -168,30 +168,7 @@
 
 <script>
 
-function getReports() {
-
-    try {
-        return JSON.parse(
-            localStorage.getItem("spotReports") || "[]"
-        );
-    } catch (error) {
-        return [];
-    }
-
-}
-
-
-function saveReports(reports) {
-
-    localStorage.setItem(
-        "spotReports",
-        JSON.stringify(reports)
-    );
-
-}
-
-
-function submitReport() {
+async function submitReport() {
 
     const locationInput =
         document.getElementById("location");
@@ -229,51 +206,36 @@ function submitReport() {
     }
 
 
-    const reports =
-        getReports();
-
-
-    const report = {
-
-        id:
-            "SR-" +
-            String(reports.length + 1)
-                .padStart(3, "0"),
-
-        location: location,
-
-        issue: issue,
-
-        description: description,
-
-        status: "Reported",
-
-        timestamp:
-            new Date().toLocaleString()
-
-    };
-
-
-    reports.push(report);
-
-    saveReports(reports);
+    try {
+        const response = await fetch("/api/reports", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ location, issue, description })
+        });
+        if (!response.ok) throw new Error("Could not submit the report.");
+        const report = await response.json();
 
 
     message.className =
         "success-message";
 
-    message.innerHTML =
+        message.innerHTML =
         "<strong>Report submitted successfully.</strong><br>" +
         "Report ID: " + escapeHTML(report.id) +
-        "<br>Maintenance has been notified.";
+        "<br>Report saved to the system.";
 
 
-    locationInput.value = "";
+        locationInput.value = "";
 
-    descriptionInput.value = "";
+        descriptionInput.value = "";
 
 
-    loadReports();
+        await loadReports();
+    } catch (error) {
+        message.className = "success-message error-message";
+        message.textContent = "Unable to submit the report. Please try again.";
+        return;
+    }
 
 
     setTimeout(function() {
@@ -318,7 +280,7 @@ function scanQR() {
 }
 
 
-function loadReports() {
+async function loadReports() {
 
     const container =
         document.getElementById("my-reports");
@@ -326,8 +288,16 @@ function loadReports() {
     const count =
         document.getElementById("report-count");
 
-    const reports =
-        getReports();
+    let reports;
+    try {
+        const response = await fetch("/api/reports");
+        if (!response.ok) throw new Error("Could not load reports.");
+        reports = await response.json();
+    } catch (error) {
+        count.textContent = "0";
+        container.innerHTML = '<div class="empty-state">Unable to load reports. Please refresh the page.</div>';
+        return;
+    }
 
 
     count.textContent =
@@ -433,13 +403,6 @@ function escapeHTML(value) {
 
 loadReports();
 
-
-window.addEventListener(
-    "storage",
-    function() {
-        loadReports();
-    }
-);
 
 </script>
 
