@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SpotReport | Admin</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+
+</head>
+
+
+<body>
+
+<header>
+
+    <div class="header-content">
+
+        <div>
+
+            <h1>SpotReport</h1>
+
+            <p>
+                Facility Management Administration
+            </p>
+
+        </div>
+
+        <div class="system-status">
+
+            <span class="status-dot"></span>
+
+            Admin Portal
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="container">
+
+
+    <div class="page-navigation">
+
+        <a href="/" class="nav-back">
+            ← Portal
+        </a>
+
+        <a href="/user">
+            User Portal
+        </a>
+
+        <a href="/admin" class="nav-active">
+            Admin Portal
+        </a>
+
+    </div>
+
+
+    <!-- DASHBOARD -->
+
+    <div class="dashboard-grid">
+
+        <div class="stat-card">
+
+            <span>TOTAL REPORTS</span>
+
+            <strong id="total-count">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>REPORTED</span>
+
+            <strong id="reported-count">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>IN PROGRESS</span>
+
+            <strong id="progress-count">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>RESOLVED</span>
+
+            <strong id="resolved-count">
+                0
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- REPORT MANAGEMENT -->
+
+    <div class="card">
+
+        <span class="eyebrow">
+            ADMINISTRATION
+        </span>
+
+        <h2>
+            Facility Reports
+        </h2>
+
+        <p>
+            Review submitted facility concerns and
+            update their maintenance status.
+        </p>
+
+
+        <div id="admin-reports">
+
+            <div class="empty-state">
+                No reports have been submitted.
+            </div>
+
+        </div>
+
+    </div>
+
+
+</main>
+
+
+<footer>
+    SpotReport — Administration Portal
+</footer>
+
+
+<script>
+
+function getReports() {
+
+    try {
+
+        return JSON.parse(
+            localStorage.getItem("spotReports") || "[]"
+        );
+
+    } catch (error) {
+
+        return [];
+
+    }
+
+}
+
+
+function saveReports(reports) {
+
+    localStorage.setItem(
+        "spotReports",
+        JSON.stringify(reports)
+    );
+
+}
+
+
+function loadDashboard() {
+
+    const reports =
+        getReports();
+
+
+    document.getElementById("total-count")
+        .textContent =
+        reports.length;
+
+
+    document.getElementById("reported-count")
+        .textContent =
+        reports.filter(function(report) {
+
+            return report.status === "Reported";
+
+        }).length;
+
+
+    document.getElementById("progress-count")
+        .textContent =
+        reports.filter(function(report) {
+
+            return (
+                report.status === "Under Review" ||
+                report.status === "In Progress"
+            );
+
+        }).length;
+
+
+    document.getElementById("resolved-count")
+        .textContent =
+        reports.filter(function(report) {
+
+            return report.status === "Resolved";
+
+        }).length;
+
+}
+
+
+function loadReports() {
+
+    const container =
+        document.getElementById("admin-reports");
+
+    const reports =
+        getReports();
+
+
+    if (reports.length === 0) {
+
+        container.innerHTML =
+            '<div class="empty-state">' +
+            'No reports have been submitted.' +
+            '</div>';
+
+        loadDashboard();
+
+        return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    reports
+        .slice()
+        .reverse()
+        .forEach(function(report) {
+
+            const item =
+                document.createElement("div");
+
+
+            item.className =
+                "report-item";
+
+
+            item.innerHTML = `
+
+                <div class="report-top">
+
+                    <div>
+
+                        <h3>
+                            ${escapeHTML(report.location)}
+                        </h3>
+
+                        <span class="issue-label">
+                            ${escapeHTML(report.issue)}
+                        </span>
+
+                    </div>
+
+
+                    <span class="status ${getStatusClass(report.status)}">
+
+                        ${escapeHTML(report.status)}
+
+                    </span>
+
+                </div>
+
+
+                <p>
+                    ${escapeHTML(report.description)}
+                </p>
+
+
+                <div class="report-meta">
+
+                    <span>
+                        ${escapeHTML(report.id)}
+                    </span>
+
+                    <span>
+                        ${escapeHTML(report.timestamp)}
+                    </span>
+
+                </div>
+
+
+                <div class="admin-actions">
+
+                    <label>
+                        Update Status
+                    </label>
+
+                    <select
+                        onchange="updateStatus('${escapeHTML(report.id)}', this.value)"
+                    >
+
+                        <option
+                            value="Reported"
+                            ${report.status === "Reported" ? "selected" : ""}
+                        >
+                            Reported
+                        </option>
+
+                        <option
+                            value="Under Review"
+                            ${report.status === "Under Review" ? "selected" : ""}
+                        >
+                            Under Review
+                        </option>
+
+                        <option
+                            value="In Progress"
+                            ${report.status === "In Progress" ? "selected" : ""}
+                        >
+                            In Progress
+                        </option>
+
+                        <option
+                            value="Resolved"
+                            ${report.status === "Resolved" ? "selected" : ""}
+                        >
+                            Resolved
+                        </option>
+
+                    </select>
+
+                </div>
+
+            `;
+
+
+            container.appendChild(item);
+
+        });
+
+
+    loadDashboard();
+
+}
+
+
+function updateStatus(id, status) {
+
+    const reports =
+        getReports();
+
+
+    const report =
+        reports.find(function(item) {
+
+            return item.id === id;
+
+        });
+
+
+    if (!report) {
+        return;
+    }
+
+
+    report.status =
+        status;
+
+
+    saveReports(reports);
+
+
+    loadReports();
+
+    loadDashboard();
+
+}
+
+
+function getStatusClass(status) {
+
+    return status
+        .toLowerCase()
+        .replaceAll(" ", "-");
+
+}
+
+
+function escapeHTML(value) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        value;
+
+    return div.innerHTML;
+
+}
+
+
+loadReports();
+
+
+window.addEventListener(
+    "storage",
+    function() {
+
+        loadReports();
+
+        loadDashboard();
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>

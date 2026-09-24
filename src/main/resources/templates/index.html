@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>SpotReport | Facility Reporting</title>
+    <title>SpotReport | Portal</title>
 
     <link rel="stylesheet" href="/css/style.css">
 </head>
@@ -12,196 +12,87 @@
 <body>
 
 <header>
-    <h1>SpotReport</h1>
-    <p>Facility Reporting and Live Service Monitoring</p>
+    <div class="header-content">
+
+        <div>
+            <h1>SpotReport</h1>
+            <p>Facility Reporting and Live Service Monitoring</p>
+        </div>
+
+        <div class="system-status">
+            <span class="status-dot"></span>
+            System Online
+        </div>
+
+    </div>
 </header>
+
 
 <main class="container">
 
-    <!-- Report Form -->
-    <section class="card">
+    <div class="card portal-card">
 
-        <div class="card-header">
-            <div>
-                <h2>Report a Facility Issue</h2>
+        <span class="eyebrow">SPOTREPORT PORTAL</span>
+
+        <h2>Choose a Portal</h2>
+
+        <p>
+            Access the facility reporting system or manage
+            submitted reports through the administrator dashboard.
+        </p>
+
+
+        <div class="portal-grid">
+
+            <a href="/user" class="portal-option">
+
+                <div class="portal-icon">
+                    👤
+                </div>
+
+                <h3>User Portal</h3>
+
                 <p>
-                    Identify the location using a QR code or enter the room
-                    keycode manually.
+                    Submit facility reports, check report status,
+                    and view live service updates.
                 </p>
-            </div>
-        </div>
 
-        <label for="location">Room / Facility Keycode</label>
+                <span class="portal-link">
+                    Open User Portal →
+                </span>
 
-        <div class="location-row">
-            <input
-                type="text"
-                id="location"
-                placeholder="Example: ROOM-B201"
-            >
-
-            <button type="button" class="secondary-button">
-                Scan QR
-            </button>
-        </div>
-
-        <label for="issue">Issue Type</label>
-
-        <select id="issue">
-            <option>Electrical Problem</option>
-            <option>Water / Plumbing</option>
-            <option>Broken Equipment</option>
-            <option>Room / Facility Damage</option>
-            <option>Other</option>
-        </select>
-
-        <label for="description">Issue Description</label>
-
-        <textarea
-            id="description"
-            placeholder="Describe the problem..."
-        ></textarea>
-
-        <button
-            type="button"
-            class="primary-button"
-            onclick="submitReport()"
-        >
-            Submit Report
-        </button>
-
-    </section>
+            </a>
 
 
-    <!-- Live Service Forum -->
-    <section class="card">
+            <a href="/admin" class="portal-option">
 
-        <div class="forum-header">
-            <div>
-                <h2>Live Service Forum</h2>
+                <div class="portal-icon">
+                    🛠️
+                </div>
+
+                <h3>Admin Dashboard</h3>
+
                 <p>
-                    View updates about reported facility concerns.
+                    Review submitted reports, monitor facility
+                    issues, and manage maintenance status.
                 </p>
-            </div>
 
-            <span class="live-indicator">
-                <span class="live-dot"></span>
-                Live
-            </span>
-        </div>
-
-        <div class="report-item">
-
-            <div class="report-top">
-                <h3>Room B201</h3>
-                <span class="status reviewing">
-                    Under Review
+                <span class="portal-link">
+                    Open Admin Dashboard →
                 </span>
-            </div>
 
-            <strong>Broken Air Conditioner</strong>
-
-            <p>
-                Maintenance personnel have received the report and are
-                reviewing the issue.
-            </p>
+            </a>
 
         </div>
 
-
-        <div class="report-item">
-
-            <div class="report-top">
-                <h3>Room A105</h3>
-                <span class="status reported">
-                    Reported
-                </span>
-            </div>
-
-            <strong>Damaged Light</strong>
-
-            <p>
-                A facility issue has been submitted and is awaiting
-                maintenance action.
-            </p>
-
-        </div>
-
-    </section>
+    </div>
 
 </main>
 
 
 <footer>
-    SpotReport Prototype · Facility Management System
+    SpotReport — Facility Management System
 </footer>
-
-
-<script>
-function submitReport() {
-    const location = document.getElementById("location").value.trim();
-    const issue = document.getElementById("issue").value;
-    const description = document.getElementById("description").value.trim();
-
-    if (location === "" || description === "") {
-        alert("Please enter the room keycode and describe the issue.");
-        return;
-    }
-
-    const report = {
-        location: location,
-        issue: issue,
-        description: description,
-        status: "Reported"
-    };
-
-    // Save the report locally for this browser
-    const reports = JSON.parse(localStorage.getItem("spotReports") || "[]");
-    reports.unshift(report);
-    localStorage.setItem("spotReports", JSON.stringify(reports));
-
-    addReportToForum(report);
-
-    document.getElementById("location").value = "";
-    document.getElementById("description").value = "";
-
-    alert("Report submitted successfully!");
-}
-
-function addReportToForum(report) {
-    const forumHeader = document.querySelector(".forum-header");
-
-    const reportItem = document.createElement("div");
-    reportItem.className = "report-item";
-
-    reportItem.innerHTML = `
-        <div class="report-top">
-            <h3>${escapeHtml(report.location)}</h3>
-            <span class="status reported">${escapeHtml(report.status)}</span>
-        </div>
-        <strong>${escapeHtml(report.issue)}</strong>
-        <p>${escapeHtml(report.description)}</p>
-    `;
-
-    forumHeader.insertAdjacentElement("afterend", reportItem);
-}
-
-function loadSavedReports() {
-    const reports = JSON.parse(localStorage.getItem("spotReports") || "[]");
-
-    reports.reverse().forEach(report => {
-        addReportToForum(report);
-    });
-}
-
-function escapeHtml(text) {
-    const div = document.createElement("div");
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-loadSavedReports();
-</script>
 
 </body>
 </html>

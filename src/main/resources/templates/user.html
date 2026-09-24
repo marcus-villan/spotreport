@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SpotReport | User</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+<header>
+    <div class="header-content">
+
+        <div>
+            <h1>SpotReport</h1>
+            <p>Facility Reporting and Live Service Monitoring</p>
+        </div>
+
+        <div class="system-status">
+            <span class="status-dot"></span>
+            User Portal
+        </div>
+
+    </div>
+</header>
+
+
+<main class="container">
+
+    <div class="page-navigation">
+        <a href="/" class="nav-back">← Portal</a>
+
+        <a href="/user" class="nav-active">
+            User Portal
+        </a>
+
+        <a href="/admin">
+            Admin Portal
+        </a>
+    </div>
+
+
+    <!-- REPORT FORM -->
+
+    <div class="card">
+
+        <span class="eyebrow">NEW REPORT</span>
+
+        <h2>Report a Facility Issue</h2>
+
+        <p>
+            Submit a facility concern and monitor its progress.
+        </p>
+
+
+        <label for="location">
+            Room / Facility Keycode
+        </label>
+
+        <div class="location-row">
+
+            <input
+                type="text"
+                id="location"
+                placeholder="Example: ROOM-B201"
+            >
+
+            <button
+                type="button"
+                class="secondary-button"
+                onclick="scanQR()"
+            >
+                Scan QR
+            </button>
+
+        </div>
+
+
+        <label for="issue">
+            Issue Type
+        </label>
+
+        <select id="issue">
+
+            <option>Electrical Problem</option>
+            <option>Water / Plumbing</option>
+            <option>Broken Equipment</option>
+            <option>Room / Facility Damage</option>
+            <option>Other</option>
+
+        </select>
+
+
+        <label for="description">
+            Issue Description
+        </label>
+
+        <textarea
+            id="description"
+            placeholder="Describe the problem..."
+        ></textarea>
+
+
+        <button
+            type="button"
+            class="primary-button"
+            onclick="submitReport()"
+        >
+            Submit Report
+        </button>
+
+
+        <div
+            id="success-message"
+            class="success-message hidden"
+        ></div>
+
+    </div>
+
+
+    <!-- REPORT HISTORY -->
+
+    <div class="card">
+
+        <div class="forum-header">
+
+            <div>
+                <span class="eyebrow">LIVE MONITORING</span>
+
+                <h2>
+                    My Reports
+                </h2>
+
+                <p>
+                    Track the status of your submitted facility reports.
+                </p>
+            </div>
+
+            <div class="report-count">
+                <strong id="report-count">0</strong>
+                <span>Reports</span>
+            </div>
+
+        </div>
+
+
+        <div id="my-reports">
+
+            <div class="empty-state">
+                No reports submitted yet.
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<footer>
+    SpotReport — User Portal
+</footer>
+
+
+<script>
+
+function getReports() {
+
+    try {
+        return JSON.parse(
+            localStorage.getItem("spotReports") || "[]"
+        );
+    } catch (error) {
+        return [];
+    }
+
+}
+
+
+function saveReports(reports) {
+
+    localStorage.setItem(
+        "spotReports",
+        JSON.stringify(reports)
+    );
+
+}
+
+
+function submitReport() {
+
+    const locationInput =
+        document.getElementById("location");
+
+    const issueInput =
+        document.getElementById("issue");
+
+    const descriptionInput =
+        document.getElementById("description");
+
+    const message =
+        document.getElementById("success-message");
+
+
+    const location =
+        locationInput.value.trim();
+
+    const issue =
+        issueInput.value;
+
+    const description =
+        descriptionInput.value.trim();
+
+
+    if (!location || !description) {
+
+        message.className =
+            "success-message error-message";
+
+        message.innerHTML =
+            "Please enter the room keycode and describe the issue.";
+
+        return;
+
+    }
+
+
+    const reports =
+        getReports();
+
+
+    const report = {
+
+        id:
+            "SR-" +
+            String(reports.length + 1)
+                .padStart(3, "0"),
+
+        location: location,
+
+        issue: issue,
+
+        description: description,
+
+        status: "Reported",
+
+        timestamp:
+            new Date().toLocaleString()
+
+    };
+
+
+    reports.push(report);
+
+    saveReports(reports);
+
+
+    message.className =
+        "success-message";
+
+    message.innerHTML =
+        "<strong>Report submitted successfully.</strong><br>" +
+        "Report ID: " + escapeHTML(report.id) +
+        "<br>Maintenance has been notified.";
+
+
+    locationInput.value = "";
+
+    descriptionInput.value = "";
+
+
+    loadReports();
+
+
+    setTimeout(function() {
+
+        message.className =
+            "success-message hidden";
+
+    }, 6000);
+
+}
+
+
+function scanQR() {
+
+    const locationInput =
+        document.getElementById("location");
+
+    const message =
+        document.getElementById("success-message");
+
+
+    locationInput.value =
+        "ROOM-B201";
+
+    locationInput.focus();
+
+
+    message.className =
+        "success-message";
+
+    message.innerHTML =
+        "QR location detected: <strong>ROOM-B201</strong>";
+
+
+    setTimeout(function() {
+
+        message.className =
+            "success-message hidden";
+
+    }, 3000);
+
+}
+
+
+function loadReports() {
+
+    const container =
+        document.getElementById("my-reports");
+
+    const count =
+        document.getElementById("report-count");
+
+    const reports =
+        getReports();
+
+
+    count.textContent =
+        reports.length;
+
+
+    if (reports.length === 0) {
+
+        container.innerHTML =
+            '<div class="empty-state">' +
+            'No reports submitted yet.' +
+            '</div>';
+
+        return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    reports
+        .slice()
+        .reverse()
+        .forEach(function(report) {
+
+            const item =
+                document.createElement("div");
+
+            item.className =
+                "report-item";
+
+
+            item.innerHTML = `
+
+                <div class="report-top">
+
+                    <div>
+
+                        <h3>
+                            ${escapeHTML(report.location)}
+                        </h3>
+
+                        <span class="issue-label">
+                            ${escapeHTML(report.issue)}
+                        </span>
+
+                    </div>
+
+                    <span class="status ${getStatusClass(report.status)}">
+                        ${escapeHTML(report.status)}
+                    </span>
+
+                </div>
+
+                <p>
+                    ${escapeHTML(report.description)}
+                </p>
+
+                <div class="report-meta">
+
+                    <span>
+                        ${escapeHTML(report.id)}
+                    </span>
+
+                    <span>
+                        ${escapeHTML(report.timestamp)}
+                    </span>
+
+                </div>
+
+            `;
+
+
+            container.appendChild(item);
+
+        });
+
+}
+
+
+function getStatusClass(status) {
+
+    return status
+        .toLowerCase()
+        .replaceAll(" ", "-");
+
+}
+
+
+function escapeHTML(value) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        value;
+
+    return div.innerHTML;
+
+}
+
+
+loadReports();
+
+
+window.addEventListener(
+    "storage",
+    function() {
+        loadReports();
+    }
+);
+
+</script>
+
+</body>
+</html>
